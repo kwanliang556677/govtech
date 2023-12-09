@@ -1,0 +1,168 @@
+<html>
+<head>
+<title>Govtech</title>
+</head>
+
+<body>
+
+<script type="text/javascript">
+document.addEventListener("DOMContentLoaded", function(event) {
+    const queryString = window.location.search;
+	const urlParams = new URLSearchParams(queryString);
+	const sessionId = urlParams.get('sessionId')
+	if(!sessionId){
+		document.getElementById("init").style.display = 'block';
+		document.getElementById("end").style.display = 'block';
+	}else{
+		const apiUrl = 'http://localhost:8080/join-session';
+		
+		const data = {
+			"name":document.getElementById("name").value, 
+			"sessionId": sessionId
+		}
+		if(document.getElementById("name").value!=''){
+			fetch(apiUrl,
+			{
+				  headers: {
+		      "Content-Type": "application/json",
+		    },
+			    method: "POST",
+			     body: JSON.stringify(data),
+			}).then(response => response.text())
+		    .then(text => {
+				document.getElementById("location-list").innerHTML = text;
+		    })
+		    .catch(error => alert("load fail! Please contact IT Admin!"));
+		}
+		document.getElementById("add").style.display = 'block';
+		document.getElementById("nameLbl").style.display = 'block';
+		document.getElementById("join").style.display = 'block';
+		document.getElementById("locationLbl").style.display = 'block';
+		document.getElementById("name").style.display = 'block';
+		document.getElementById("location").style.display = 'block';
+		document.getElementById("listFinalRestaurant").style.display = 'block';
+	}
+
+});
+
+function initiateSession() {
+	// Define the API URL
+	const apiUrl = 'http://localhost:8080/initiate-session';
+
+	fetch(apiUrl,
+	{
+	    method: "POST",
+	}).then(response => response.text())
+    .then(text => {
+    	console.log(text)
+    	const currentUrl = window.location.href;
+    	console.log(currentUrl)
+		document.getElementById("invite-url").innerHTML = currentUrl+"?sessionId="+text;
+		document.getElementById("sessionId").value =text;
+    })
+    .catch(error => console.error(error));
+}
+function endSession() {
+	// Define the API URL
+	const apiUrl = 'http://localhost:8080/end-session?sessionId='+document.getElementById("sessionId").value;
+	fetch(apiUrl,
+	{
+	    method: "POST",
+	}).then(response => response.text())
+    .then(text => {
+    	const currentUrl = window.location.href;
+    	alert("session ended")
+    })
+    .catch(error => {    	alert("error")});
+}
+function addLocation() {
+ 	const queryString = window.location.search;
+	const urlParams = new URLSearchParams(queryString);
+	const sessionId = urlParams.get('sessionId')
+	const apiUrl = 'http://localhost:8080/add-location';
+
+	const data = {
+		"teamMemberName":document.getElementById("name").value, 
+		"locationName":document.getElementById("location").value,
+		"sessionId": sessionId
+	}
+
+	fetch(apiUrl,
+	{
+		  headers: {
+      "Content-Type": "application/json",
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+    },
+	    method: "POST",
+	     body: JSON.stringify(data),
+	}).then(response => response.text())
+    .then(text => {
+		document.getElementById("location-list").innerHTML = text;
+    })
+    .catch(error => alert("Save fail! Please contact IT Admin!"));
+}
+
+function joinSession() {
+ 	const queryString = window.location.search;
+	const urlParams = new URLSearchParams(queryString);
+	const sessionId = urlParams.get('sessionId')
+	const apiUrl = 'http://localhost:8080/join-session';
+
+	const data = {
+		"teamMemberName":document.getElementById("name").value, 
+		"sessionId": sessionId
+	}
+
+	fetch(apiUrl,
+	{
+		  headers: {
+      "Content-Type": "application/json",
+    },
+	    method: "POST",
+	     body: JSON.stringify(data),
+	}).then(response => response.text())
+    .then(text => {
+		document.getElementById("location-list").innerHTML = text;
+    })
+    .catch(error => alert("Save fail! Please contact IT Admin!"));
+}
+
+function listFinalRestaurant() {
+ 	const queryString = window.location.search;
+	const urlParams = new URLSearchParams(queryString);
+	const sessionId = urlParams.get('sessionId')
+	const apiUrl = 'http://localhost:8080/list-finalize-restaurant?name='+document.getElementById("name").value+"&sessionId="+sessionId;
+
+	fetch(apiUrl,
+	{
+	    method: "GET",
+	}).then(response => response.text())
+    .then(text => {
+		document.getElementById("location-list").innerHTML = text;
+    })
+    .catch(error => alert("List fail! Please contact IT Admin!"));
+}
+
+</script>
+
+This is a Lunch Location Program <br><br>
+<button id="init" onclick="initiateSession()" hidden>Initiate Session</button>
+ <label id="nameLbl" hidden>Name</label><input type="text" id="name" hidden>
+<button id="join" onclick="joinSession()" hidden>Join Session</button>
+
+
+ <label id="locationLbl"  hidden>Location:</label><input type="text" id="location" hidden>
+ <button id="add" onclick="addLocation()" hidden>Add Location</button>
+<button id="end" onclick="endSession()" hidden>End Session</button>
+<input type="hidden" id="sessionId"/>
+<button id="listFinalRestaurant" onclick="listFinalRestaurant()" hidden>List Restaurant</button>
+
+<div id="invite-url">
+
+</div>
+<div id="location-list">
+
+</div>
+
+</body>
+</html>
