@@ -1,7 +1,7 @@
 # govtech
 This Application consist of Front-end and Back-end. 
 
-For front end module, simply open the test.html in Google chrome. While 
+For front end module, simply open the test.htm in Google chrome. While 
 
 For back-end application it is written in Java 17 with Spring Boot 3.2 as its framework. Simply import the backend as maven in inteliJ and run the main method in DemoApplication.java.
 
